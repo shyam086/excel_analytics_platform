@@ -5,6 +5,7 @@
   text-align: center;
 }
 
+/* logo */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -19,12 +20,8 @@
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -39,4 +36,38 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* ---------------- REFINED STYLES (PURPLE THEME) ------------------ */
+
+/* Headings & labels - keep default text color purple */
+h1, h2, h3, label, p, a {
+  color: #4B0082; /* Dark purple */
+}
+
+/* Optional utility CSS classes (use only where needed) */
+.purple-btn {
+  background-color: #4B0082;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.purple-btn:hover {
+  background-color: #36005C;
+}
+
+.purple-input {
+  color: #4B0082;
+  border: 1px solid #e5e7eb; /* light gray */
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.purple-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(75,0,130,0.08); /* subtle purple ring */
 }
