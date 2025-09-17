@@ -52,14 +52,14 @@ export default function UserLogin() {
   return (
     <div ref={vantaRef} className="min-h-screen flex justify-center items-center">
       <form onSubmit={handleSubmit} className="bg-white p-8 shadow-xl rounded w-full max-w-sm z-10 relative">
-        <h2 className="text-2xl font-bold mb-4 text-center text-blue-700">User Login</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-purple-800">User Login</h2>
         <input
           type="email"
           placeholder="Email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-800"
         />
         <input
           type="password"
@@ -67,20 +67,26 @@ export default function UserLogin() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-800"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-semibold py-2 rounded mt-4 hover:bg-blue-700 transition"
+          className="w-full bg-purple-800 text-white font-semibold py-2 rounded mt-4 hover:bg-purple-900 transition"
         >
           Login
         </button>
-        <p className="mt-2 text-blue-600 cursor-pointer text-sm" onClick={() => navigate('/forgot-password')}>
+        <p
+          className="mt-2 text-purple-700 cursor-pointer text-sm"
+          onClick={() => navigate('/forgot-password')}
+        >
           Forgot Password?
         </p>
         <p className="mt-2 text-sm">
           Don't have an account?{' '}
-          <span className="text-blue-600 cursor-pointer" onClick={() => navigate('/user-register')}>
+          <span
+            className="text-purple-700 cursor-pointer"
+            onClick={() => navigate('/user-register')}
+          >
             Register
           </span>
         </p>

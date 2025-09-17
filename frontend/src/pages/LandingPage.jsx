@@ -20,8 +20,8 @@ export default function LandingPage() {
         minWidth: 200.0,
         scale: 1.0,
         scaleMobile: 1.0,
-        color: 0xffffff,
-        backgroundColor: 0x0a0a0a,
+        color: 0x6D28D9, // purple lines
+        backgroundColor: 0x0a0a0a, // dark background
         points: 12.0,
         maxDistance: 20.0,
         spacing: 18.0,
@@ -39,17 +39,17 @@ export default function LandingPage() {
       ref={vantaRef}
       className="min-h-screen flex flex-col relative overflow-hidden"
     >
-      {/* Overlay layer */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
+      {/* Overlay for dimming background */}
+      <div className="absolute inset-0 bg-black/60 z-0" />
 
       {/* Header */}
       <header className="p-4 flex justify-between items-center text-white z-10 relative">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold text-purple-400">
           KODE Analytics
         </h1>
         <button
           onClick={() => navigate("/admin-login")}
-          className="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-200 font-medium transition duration-200"
+          className="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-900 font-medium transition duration-200"
         >
           Admin Login
         </button>
@@ -57,15 +57,15 @@ export default function LandingPage() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-6 z-10 relative">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
           Welcome to Smart Data Visualization
         </h2>
-        <p className="mb-8 text-lg md:text-xl bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+        <p className="mb-8 text-lg md:text-xl text-purple-200">
           Upload, Analyze, and Export Charts with Ease
         </p>
         <button
           onClick={() => navigate("/user-login")}
-          className="bg-white text-blue-600 px-6 py-3 rounded-full text-lg font-semibold hover:bg-gray-100 shadow-lg transition duration-200"
+          className="bg-purple-700 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-purple-900 shadow-lg transition duration-200"
         >
           Get Started
         </button>

@@ -50,14 +50,14 @@ export default function UserRegister() {
   return (
     <div ref={vantaRef} className="min-h-screen flex justify-center items-center">
       <form onSubmit={handleSubmit} className="bg-white p-8 shadow-xl rounded w-full max-w-sm z-10 relative">
-        <h2 className="text-2xl font-bold mb-4 text-center text-blue-700">User Register</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-purple-800">User Register</h2>
         <input
           name="name"
           placeholder="Name"
           required
           value={form.name}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-800"
         />
         <input
           name="email"
@@ -65,7 +65,7 @@ export default function UserRegister() {
           required
           value={form.email}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-800"
         />
         <input
           name="password"
@@ -74,17 +74,20 @@ export default function UserRegister() {
           required
           value={form.password}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border rounded mt-4 focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-800"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-semibold py-2 rounded mt-4 hover:bg-blue-700 transition"
+          className="w-full bg-purple-800 text-white font-semibold py-2 rounded mt-4 hover:bg-purple-900 transition"
         >
           Register
         </button>
         <p className="mt-2 text-sm">
           Already have an account?{' '}
-          <span className="text-blue-600 cursor-pointer" onClick={() => navigate('/user-login')}>
+          <span
+            className="text-purple-700 cursor-pointer"
+            onClick={() => navigate('/user-login')}
+          >
             Login
           </span>
         </p>
