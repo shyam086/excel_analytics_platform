@@ -56,8 +56,9 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 z-10 relative">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
+    <main className="flex-1 flex flex-col items-center justify-center text-center px-6 z-10 relative">
+  <div className="bg-black/60 backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg">
+    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
           Welcome to Smart Data Visualization
         </h2>
         <p className="mb-8 text-lg md:text-xl text-purple-200">
@@ -69,6 +70,7 @@ export default function LandingPage() {
         >
           Get Started
         </button>
+       </div>
       </main>
     </div>
   );
