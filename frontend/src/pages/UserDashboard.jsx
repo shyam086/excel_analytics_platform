@@ -273,7 +273,7 @@ export default function UserDashboard() {
               {chartType === 'doughnut' && <Doughnut data={chartData} />}
               {chartType === 'radar' && <Radar data={chartData} />}
               {chartType === 'polar' && <PolarArea data={chartData} />}
-              {chartType === 'scatter' && (
+{chartType === 'scatter' && (
   <Scatter 
     data={{
       datasets: [{
