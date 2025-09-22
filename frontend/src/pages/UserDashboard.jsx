@@ -1,14 +1,25 @@
 import { useEffect, useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Tooltip } from 'chart.js';
-import LogoutButton from '../components/LogoutButton';
+import { Bar, Pie, Line, Doughnut, Radar, PolarArea } from 'react-chartjs-2';
+import { 
+  Chart as ChartJS, 
+  BarElement, CategoryScale, LinearScale, ArcElement, 
+  PointElement, LineElement, Tooltip, RadialLinearScale 
+} from 'chart.js';import LogoutButton from '../components/LogoutButton';
 import Header from '../components/Header';
 import { motion } from 'framer-motion';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Tooltip);
-
+ChartJS.register(
+  BarElement, 
+  CategoryScale, 
+  LinearScale, 
+  ArcElement, 
+  PointElement, 
+  LineElement, 
+  Tooltip, 
+  RadialLinearScale
+);
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -198,15 +209,18 @@ export default function UserDashboard() {
           <div className="flex flex-wrap items-center gap-4">
             <div>
               <label className="font-medium text-purple-800">Chart Type:</label>
-              <select
-                value={chartType}
-                onChange={(e) => setChartType(e.target.value)}
-                className="ml-2 border px-2 py-1 rounded text-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
-              >
-                <option value="bar">Bar</option>
-                <option value="pie">Pie</option>
-                <option value="line">Line</option>
-              </select>
+             <select 
+              value={chartType} 
+                onChange={(e) => setChartType(e.target.value)} 
+                className="ml-2 border px-2 py-1 rounded"
+          >
+            <option value="bar">Bar</option>
+            <option value="pie">Pie</option>
+            <option value="line">Line</option>
+            <option value="doughnut">Doughnut</option>
+            <option value="radar">Radar</option>
+            <option value="polar">Polar Area</option>
+            </select>
             </div>
 
             {availableColumns.length >= 2 && (
@@ -249,6 +263,9 @@ export default function UserDashboard() {
               {chartType === 'bar' && <Bar data={chartData} />}
               {chartType === 'pie' && <Pie data={chartData} />}
               {chartType === 'line' && <Line data={chartData} />}
+              {chartType === 'doughnut' && <Doughnut data={chartData} />}
+              {chartType === 'radar' && <Radar data={chartData} />}
+              {chartType === 'polar' && <PolarArea data={chartData} />}
               <div className="mt-6">
                 <h3 className="text-lg font-bold mb-2 text-purple-900">Summary</h3>
                 <ul className="ml-6 text-purple-700 text-sm space-y-1">
