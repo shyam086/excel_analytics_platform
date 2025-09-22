@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Bar, Pie, Line, Doughnut, Radar, PolarArea } from 'react-chartjs-2';
+import { Bar, Pie, Line, Doughnut, Radar, PolarArea, Scatter, Bubble } from 'react-chartjs-2';
 import { 
   Chart as ChartJS, 
   BarElement, CategoryScale, LinearScale, ArcElement, 
-  PointElement, LineElement, Tooltip, RadialLinearScale 
-} from 'chart.js';import LogoutButton from '../components/LogoutButton';
+  PointElement, LineElement, Tooltip, Legend, RadialLinearScale 
+} from 'chart.js';
+import LogoutButton from '../components/LogoutButton';
 import Header from '../components/Header';
 import { motion } from 'framer-motion';
 
@@ -18,6 +19,7 @@ ChartJS.register(
   PointElement, 
   LineElement, 
   Tooltip, 
+  Legend,
   RadialLinearScale
 );
 export default function UserDashboard() {
@@ -209,18 +211,23 @@ export default function UserDashboard() {
           <div className="flex flex-wrap items-center gap-4">
             <div>
               <label className="font-medium text-purple-800">Chart Type:</label>
-             <select 
+  <select 
               value={chartType} 
-                onChange={(e) => setChartType(e.target.value)} 
-                className="ml-2 border px-2 py-1 rounded"
-          >
-            <option value="bar">Bar</option>
-            <option value="pie">Pie</option>
-            <option value="line">Line</option>
-            <option value="doughnut">Doughnut</option>
-            <option value="radar">Radar</option>
-            <option value="polar">Polar Area</option>
-            </select>
+              onChange={(e) => setChartType(e.target.value)} 
+              className="ml-2 border px-2 py-1 rounded"
+            >
+              <option value="bar">Bar</option>
+              <option value="pie">Pie</option>
+              <option value="line">Line</option>
+              <option value="doughnut">Doughnut</option>
+              <option value="radar">Radar</option>
+              <option value="polar">Polar Area</option>
+              <option value="scatter">Scatter</option>
+              <option value="bubble">Bubble</option>
+              <option value="stacked">Stacked Bar</option>
+              <option value="mixed">Mixed (Bar + Line)</option>
+          </select>
+            </div>
             </div>
 
             {availableColumns.length >= 2 && (
@@ -266,6 +273,84 @@ export default function UserDashboard() {
               {chartType === 'doughnut' && <Doughnut data={chartData} />}
               {chartType === 'radar' && <Radar data={chartData} />}
               {chartType === 'polar' && <PolarArea data={chartData} />}
+              {chartType === 'scatter' && (
+  <Scatter 
+    data={{
+      datasets: [{
+        label: yKey,
+        data: rawData.map(row => ({ x: Number(row[xKey]), y: Number(row[yKey]) })),
+        backgroundColor: '#60a5fa'
+      }]
+    }} 
+  />
+)}
+
+{chartType === 'bubble' && (
+  <Bubble 
+    data={{
+      datasets: [{
+        label: yKey,
+        data: rawData.map(row => ({
+          x: Number(row[xKey]),
+          y: Number(row[yKey]),
+          r: Math.floor(Math.random() * 10) + 5  // random bubble size
+        })),
+        backgroundColor: '#f87171'
+      }]
+    }} 
+  />
+)}
+
+{chartType === 'stacked' && (
+  <Bar 
+    data={{
+      ...chartData,
+      datasets: [
+        {
+          label: `${yKey} (Set 1)`,
+          data: chartData.datasets[0].data.map(v => v + 5),
+          backgroundColor: '#4ade80'
+        },
+        {
+          label: `${yKey} (Set 2)`,
+          data: chartData.datasets[0].data.map(v => v - 3),
+          backgroundColor: '#60a5fa'
+        }
+      ]
+    }}
+    options={{
+      plugins: { legend: { position: "top" } },
+      responsive: true,
+      scales: {
+        x: { stacked: true },
+        y: { stacked: true }
+      }
+    }}
+  />
+)}
+
+{chartType === 'mixed' && (
+  <Bar 
+    data={{
+      labels: chartData.labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: yKey + ' (Bar)',
+          data: chartData.datasets[0].data,
+          backgroundColor: '#fbbf24'
+        },
+        {
+          type: 'line',
+          label: yKey + ' (Line)',
+          data: chartData.datasets[0].data,
+          borderColor: '#1e40af',
+          borderWidth: 2
+        }
+      ]
+    }}
+  />
+)}
               <div className="mt-6">
                 <h3 className="text-lg font-bold mb-2 text-purple-900">Summary</h3>
                 <ul className="ml-6 text-purple-700 text-sm space-y-1">
