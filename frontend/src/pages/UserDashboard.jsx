@@ -228,40 +228,39 @@ export default function UserDashboard() {
               <option value="mixed">Mixed (Bar + Line)</option>
           </select>
             </div>
-            </div>
-
-            {availableColumns.length >= 2 && (
-              <>
-                <div>
-                  <label className="font-medium text-purple-800 ml-2">X Axis:</label>
-                  <select
-                    value={xKey}
-                    onChange={(e) => {
-                      setXKey(e.target.value);
-                      processChartData(rawData, e.target.value, yKey);
-                    }}
-                    className="ml-2 border px-2 py-1 rounded text-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  >
-                    {availableColumns.map(col => <option key={col} value={col}>{col}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="font-medium text-purple-800 ml-2">Y Axis:</label>
-                  <select
-                    value={yKey}
-                    onChange={(e) => {
-                      setYKey(e.target.value);
-                      processChartData(rawData, xKey, e.target.value);
-                    }}
-                    className="ml-2 border px-2 py-1 rounded text-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  >
-                    {availableColumns.map(col => <option key={col} value={col}>{col}</option>)}
-                  </select>
-                </div>
-              </>
-            )}
           </div>
+
+          {availableColumns.length >= 2 && (
+            <>
+              <div>
+                <label className="font-medium text-purple-800 ml-2">X Axis:</label>
+                <select
+                  value={xKey}
+                  onChange={(e) => {
+                    setXKey(e.target.value);
+                    processChartData(rawData, e.target.value, yKey);
+                  }}
+                  className="ml-2 border px-2 py-1 rounded text-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                >
+                  {availableColumns.map(col => <option key={col} value={col}>{col}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="font-medium text-purple-800 ml-2">Y Axis:</label>
+                <select
+                  value={yKey}
+                  onChange={(e) => {
+                    setYKey(e.target.value);
+                    processChartData(rawData, xKey, e.target.value);
+                  }}
+                  className="ml-2 border px-2 py-1 rounded text-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                >
+                  {availableColumns.map(col => <option key={col} value={col}>{col}</option>)}
+                </select>
+              </div>
+            </>
+          )}
         </div>
 
         {chartData && (
@@ -379,41 +378,43 @@ export default function UserDashboard() {
           </>
         )}
 
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-900">Your Uploaded Files</h2>
-          <table className="w-full border text-sm text-left text-purple-800 bg-white shadow rounded">
-            <thead className="bg-purple-50 text-purple-700">
-              <tr>
-                <th className="px-4 py-2">File Name</th>
-                <th className="px-4 py-2">Uploaded</th>
-                <th className="px-4 py-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {uploadedFiles.map(file => (
-                <tr key={file._id} className="border-t hover:bg-purple-50">
-                  <td className="px-4 py-2">{file.originalName}</td>
-                  <td className="px-4 py-2">{new Date(file.uploadDate).toLocaleString()}</td>
-                  <td className="px-4 py-2">
-                    <button onClick={() => viewFileData(file._id)} className="text-purple-700 hover:underline">
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {uploadedFiles.length === 0 && (
+        <div>
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold mb-4 text-purple-900">Your Uploaded Files</h2>
+            <table className="w-full border text-sm text-left text-purple-800 bg-white shadow rounded">
+              <thead className="bg-purple-50 text-purple-700">
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-center text-purple-600">
-                    No files uploaded yet
-                  </td>
+                  <th className="px-4 py-2">File Name</th>
+                  <th className="px-4 py-2">Uploaded</th>
+                  <th className="px-4 py-2">Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {uploadedFiles.map(file => (
+                  <tr key={file._id} className="border-t hover:bg-purple-50">
+                    <td className="px-4 py-2">{file.originalName}</td>
+                    <td className="px-4 py-2">{new Date(file.uploadDate).toLocaleString()}</td>
+                    <td className="px-4 py-2">
+                      <button onClick={() => viewFileData(file._id)} className="text-purple-700 hover:underline">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {uploadedFiles.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="px-4 py-6 text-center text-purple-600">
+                      No files uploaded yet
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-        <div className="mt-8">
-          <LogoutButton />
+          <div className="mt-8">
+            <LogoutButton />
+          </div>
         </div>
       </motion.div>
     </div>
