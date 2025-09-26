@@ -27,7 +27,6 @@ import LogoutButton from "../components/LogoutButton";
 import Header from "../components/Header";
 import { motion } from "framer-motion";
 
-// Register chart types
 ChartJS.register(
   BarElement,
   CategoryScale,
@@ -55,26 +54,33 @@ export default function UserDashboard() {
   const [downloadHistory, setDownloadHistory] = useState([]);
   const exportRef = useRef();
 
+  // ✅ Load profile & uploaded files
   useEffect(() => {
     fetchProfile();
     fetchUserFiles();
   }, []);
 
-  // ✅ Load download history when user is fetched
+  // ✅ Load saved download history from localStorage
   useEffect(() => {
     if (user?.email) {
-      const saved = JSON.parse(localStorage.getItem(`downloadHistory_${user.email}`)) || [];
-      setDownloadHistory(saved);
+      const saved = JSON.parse(
+        localStorage.getItem(`downloadHistory_${user.email}`)
+      );
+      if (saved) setDownloadHistory(saved);
     }
   }, [user]);
 
   // ✅ Save download history per user
   useEffect(() => {
     if (user?.email) {
-      localStorage.setItem(`downloadHistory_${user.email}`, JSON.stringify(downloadHistory));
+      localStorage.setItem(
+        `downloadHistory_${user.email}`,
+        JSON.stringify(downloadHistory)
+      );
     }
   }, [downloadHistory, user]);
 
+  // ✅ Fetch user profile
   const fetchProfile = async () => {
     const token = localStorage.getItem("token");
     const res = await fetch("http://localhost:8080/api/protected/profile", {
@@ -84,6 +90,7 @@ export default function UserDashboard() {
     if (res.ok) setUser(data.user);
   };
 
+  // ✅ Fetch uploaded files
   const fetchUserFiles = async () => {
     const token = localStorage.getItem("token");
     const res = await fetch("http://localhost:8080/api/files/my-files", {
@@ -93,6 +100,12 @@ export default function UserDashboard() {
     if (res.ok) setUploadedFiles(files);
   };
 
+  // ✅ Clear Upload History
+  const clearUploadHistory = () => {
+    setUploadedFiles([]);
+  };
+
+  // ✅ Upload Excel
   const handleExcelUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -118,6 +131,7 @@ export default function UserDashboard() {
     }
   };
 
+  // ✅ View file data and generate chart
   const viewFileData = async (fileId) => {
     try {
       const token = localStorage.getItem("token");
@@ -144,9 +158,9 @@ export default function UserDashboard() {
     }
   };
 
+  // ✅ Process data for charts
   const processChartData = (json, x, y) => {
     if (!json || json.length === 0 || !x || !y) return;
-
     const labels = json.map((row) => row[x]);
     const values = json.map((row) => Number(row[y]) || 0);
 
@@ -172,23 +186,16 @@ export default function UserDashboard() {
 
     const total = values.reduce((a, b) => a + b, 0);
     const avg = values.length ? (total / values.length).toFixed(2) : 0;
-    const max = values.length ? Math.max(...values) : 0;
-    const min = values.length ? Math.min(...values) : 0;
+    const max = Math.max(...values);
+    const min = Math.min(...values);
     const maxLabel = labels[values.indexOf(max)];
     const minLabel = labels[values.indexOf(min)];
 
     setChartData(data);
-    setSummary({
-      avg,
-      max,
-      min,
-      maxLabel,
-      minLabel,
-      count: [...new Set(labels)].length,
-    });
+    setSummary({ avg, max, min, maxLabel, minLabel, count: labels.length });
   };
 
-  // ✅ Export chart + save to history
+  // ✅ Export chart + save history
   const exportChart = async (format) => {
     const canvas = await html2canvas(exportRef.current, {
       backgroundColor: darkMode ? "#111827" : "#ffffff",
@@ -219,6 +226,7 @@ export default function UserDashboard() {
     }
   };
 
+  // ✅ Clear Download History
   const clearDownloadHistory = () => {
     setDownloadHistory([]);
     if (user?.email) localStorage.removeItem(`downloadHistory_${user.email}`);
@@ -227,12 +235,18 @@ export default function UserDashboard() {
   if (!user) return <div>Loading...</div>;
 
   return (
-    <div className={`flex min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
+    <div
+      className={`flex min-h-screen ${
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+      }`}
+    >
       {/* Sidebar */}
       <motion.div
         initial={{ x: -200 }}
         animate={{ x: 0 }}
-        className={`${darkMode ? "bg-gray-800" : "bg-purple-900"} w-64 text-white flex flex-col p-6 shadow-lg`}
+        className={`${
+          darkMode ? "bg-gray-800" : "bg-purple-900"
+        } w-64 text-white flex flex-col p-6 shadow-lg`}
       >
         <h2 className="text-2xl font-bold mb-6">📊 KODE</h2>
         <nav className="flex-1 space-y-4">
@@ -265,15 +279,28 @@ export default function UserDashboard() {
       {/* Main */}
       <div className="flex-1 p-6">
         <Header />
+
         {/* Dashboard */}
         {activeTab === "dashboard" && (
           <>
             <h1 className="text-3xl font-bold mb-4">Welcome, {user.name}</h1>
-
-            {/* Control Panel */}
-            <div className={`${darkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-200"} border rounded-lg shadow p-6 mb-8 flex flex-wrap items-center gap-4`}>
-              <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} className="border px-3 py-2 rounded bg-white text-black" />
-              <select onChange={(e) => viewFileData(e.target.value)} className="border px-3 py-2 rounded text-purple-800">
+            <div
+              className={`${
+                darkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-200"
+              } border rounded-lg shadow p-6 mb-8 flex flex-wrap items-center gap-4`}
+            >
+              <input
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleExcelUpload}
+                className="border px-3 py-2 rounded bg-white text-black"
+              />
+              <select
+                onChange={(e) => viewFileData(e.target.value)}
+                className="border px-3 py-2 rounded text-purple-800"
+              >
                 <option value="">Select File</option>
                 {uploadedFiles.map((file) => (
                   <option key={file._id} value={file._id}>
@@ -292,7 +319,9 @@ export default function UserDashboard() {
                 >
                   <option value="">Select X Axis</option>
                   {availableColumns.map((col) => (
-                    <option key={col} value={col}>{col}</option>
+                    <option key={col} value={col}>
+                      {col}
+                    </option>
                   ))}
                 </select>
               )}
@@ -307,11 +336,17 @@ export default function UserDashboard() {
                 >
                   <option value="">Select Y Axis</option>
                   {availableColumns.map((col) => (
-                    <option key={col} value={col}>{col}</option>
+                    <option key={col} value={col}>
+                      {col}
+                    </option>
                   ))}
                 </select>
               )}
-              <select value={chartType} onChange={(e) => setChartType(e.target.value)} className="border px-3 py-2 rounded text-purple-800">
+              <select
+                value={chartType}
+                onChange={(e) => setChartType(e.target.value)}
+                className="border px-3 py-2 rounded text-purple-800"
+              >
                 <option value="">Select Extra Chart</option>
                 <option value="line">Line</option>
                 <option value="doughnut">Doughnut</option>
@@ -320,23 +355,58 @@ export default function UserDashboard() {
                 <option value="scatter">Scatter</option>
                 <option value="bubble">Bubble</option>
               </select>
-              <button onClick={() => exportChart("pdf")} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <button
+                onClick={() => exportChart("pdf")}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
                 Export PDF
               </button>
-              <button onClick={() => exportChart("png")} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+              <button
+                onClick={() => exportChart("png")}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+              >
                 Export PNG
               </button>
             </div>
 
             {/* Charts */}
             {chartData && (
-              <motion.div ref={exportRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><Bar data={chartData} /></div>
-                <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><Pie data={chartData} /></div>
-                {chartType === "line" && <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><Line data={chartData} /></div>}
-                {chartType === "doughnut" && <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><Doughnut data={chartData} /></div>}
-                {chartType === "radar" && <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><Radar data={chartData} /></div>}
-                {chartType === "polar" && <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}><PolarArea data={chartData} /></div>}
+              <motion.div
+                ref={exportRef}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div
+                  className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}
+                >
+                  <Bar data={chartData} />
+                </div>
+                <div
+                  className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}
+                >
+                  <Pie data={chartData} />
+                </div>
+                {chartType === "line" && (
+                  <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}>
+                    <Line data={chartData} />
+                  </div>
+                )}
+                {chartType === "doughnut" && (
+                  <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}>
+                    <Doughnut data={chartData} />
+                  </div>
+                )}
+                {chartType === "radar" && (
+                  <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}>
+                    <Radar data={chartData} />
+                  </div>
+                )}
+                {chartType === "polar" && (
+                  <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}>
+                    <PolarArea data={chartData} />
+                  </div>
+                )}
                 {chartType === "scatter" && (
                   <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-4 rounded shadow`}>
                     <Scatter
@@ -374,13 +444,28 @@ export default function UserDashboard() {
                     />
                   </div>
                 )}
-                <div className={`col-span-1 md:col-span-2 ${darkMode ? "bg-gray-800 text-white" : "bg-white text-black"} p-6 rounded shadow`}>
+                {/* Summary */}
+                <div
+                  className={`col-span-1 md:col-span-2 ${
+                    darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                  } p-6 rounded shadow`}
+                >
                   <h3 className="text-lg font-bold mb-2">📊 Data Summary</h3>
                   <ul className="ml-6 text-sm space-y-1">
-                    <li><strong>Average:</strong> {summary?.avg}</li>
-                    <li><strong>Highest Value:</strong> {summary?.max} ({summary?.maxLabel})</li>
-                    <li><strong>Lowest Value:</strong> {summary?.min} ({summary?.minLabel})</li>
-                    <li><strong>Unique Categories:</strong> {summary?.count}</li>
+                    <li>
+                      <strong>Average:</strong> {summary?.avg}
+                    </li>
+                    <li>
+                      <strong>Highest Value:</strong> {summary?.max} (
+                      {summary?.maxLabel})
+                    </li>
+                    <li>
+                      <strong>Lowest Value:</strong> {summary?.min} (
+                      {summary?.minLabel})
+                    </li>
+                    <li>
+                      <strong>Unique Categories:</strong> {summary?.count}
+                    </li>
                   </ul>
                 </div>
               </motion.div>
@@ -390,11 +475,23 @@ export default function UserDashboard() {
 
         {/* Uploads */}
         {activeTab === "uploads" && (
-          <div className={`${darkMode ? "bg-gray-800 text-white" : "bg-white text-black"} p-6 rounded shadow`}>
+          <div
+            className={`${
+              darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            } p-6 rounded shadow`}
+          >
             <h1 className="text-2xl font-bold mb-4">⬆️ Upload History</h1>
+            <button
+              onClick={clearUploadHistory}
+              className="mb-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Clear Upload History
+            </button>
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className={`${darkMode ? "bg-gray-700" : "bg-gray-200"}`}>
+                <tr
+                  className={`${darkMode ? "bg-gray-700" : "bg-gray-200"}`}
+                >
                   <th className="p-2 text-left">File Name</th>
                   <th className="p-2 text-left">Uploaded On</th>
                 </tr>
@@ -402,14 +499,24 @@ export default function UserDashboard() {
               <tbody>
                 {uploadedFiles.length > 0 ? (
                   uploadedFiles.map((file) => (
-                    <tr key={file._id} className="border-t hover:bg-purple-100 dark:hover:bg-gray-700">
+                    <tr
+                      key={file._id}
+                      className="border-t hover:bg-purple-100 dark:hover:bg-gray-700"
+                    >
                       <td className="p-2">{file.originalName}</td>
-                      <td className="p-2">{new Date(file.uploadDate).toLocaleString()}</td>
+                      <td className="p-2">
+                        {new Date(file.uploadDate).toLocaleString()}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2" className="text-center p-4 text-gray-500">No uploads yet</td>
+                    <td
+                      colSpan="2"
+                      className="text-center p-4 text-gray-500"
+                    >
+                      No uploads yet
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -419,7 +526,11 @@ export default function UserDashboard() {
 
         {/* Downloads */}
         {activeTab === "downloads" && (
-          <div className={`${darkMode ? "bg-gray-800 text-white" : "bg-white text-black"} p-6 rounded shadow`}>
+          <div
+            className={`${
+              darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            } p-6 rounded shadow`}
+          >
             <h1 className="text-2xl font-bold mb-4">⬇️ Download History</h1>
             <button
               onClick={clearDownloadHistory}
@@ -429,7 +540,9 @@ export default function UserDashboard() {
             </button>
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className={`${darkMode ? "bg-gray-700" : "bg-gray-200"}`}>
+                <tr
+                  className={`${darkMode ? "bg-gray-700" : "bg-gray-200"}`}
+                >
                   <th className="p-2 text-left">File Name</th>
                   <th className="p-2 text-left">Downloaded On</th>
                 </tr>
@@ -437,14 +550,22 @@ export default function UserDashboard() {
               <tbody>
                 {downloadHistory.length > 0 ? (
                   downloadHistory.map((i) => (
-                    <tr key={i.id} className="border-t hover:bg-purple-100 dark:hover:bg-gray-700">
+                    <tr
+                      key={i.id}
+                      className="border-t hover:bg-purple-100 dark:hover:bg-gray-700"
+                    >
                       <td className="p-2">{i.name}</td>
                       <td className="p-2">{i.date}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2" className="text-center p-4 text-gray-500">No downloads yet</td>
+                    <td
+                      colSpan="2"
+                      className="text-center p-4 text-gray-500"
+                    >
+                      No downloads yet
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -454,12 +575,20 @@ export default function UserDashboard() {
 
         {/* Settings */}
         {activeTab === "settings" && (
-          <div className={`${darkMode ? "bg-gray-800 text-white" : "bg-white text-black"} p-6 rounded shadow space-y-6`}>
+          <div
+            className={`${
+              darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            } p-6 rounded shadow space-y-6`}
+          >
             <h1 className="text-2xl font-bold mb-4">⚙️ Settings</h1>
             <div>
               <h2 className="text-lg font-semibold mb-2">Profile</h2>
-              <p><strong>Name:</strong> {user?.name}</p>
-              <p><strong>Email:</strong> {user?.email}</p>
+              <p>
+                <strong>Name:</strong> {user?.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {user?.email}
+              </p>
             </div>
             <div>
               <h2 className="text-lg font-semibold mb-2">Appearance</h2>
