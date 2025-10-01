@@ -1,17 +1,6 @@
-// const User = require('../models/User');
-
-// exports.getAllUsers = async (req, res) => {
-//   if (req.user.role !== 'admin') {
-//     return res.status(403).json({ message: 'Forbidden: admin only' });
-//   }
-
-//   const users = await User.find().select('-password').sort({ createdAt: -1 });
-//   res.json(users);
-// };
 const User = require('../models/User');
 const File = require('../models/File');
 
-// ✅ GET all users (admin only)
 exports.getAllUsers = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -26,7 +15,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// ✅ PUT /admin/promote/:id — Promote a user to admin
 exports.promoteToAdmin = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -51,7 +39,6 @@ exports.promoteToAdmin = async (req, res) => {
   }
 };
 
-// ✅ GET /admin/files – all uploaded files (optional if needed)
 exports.getAllFiles = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
